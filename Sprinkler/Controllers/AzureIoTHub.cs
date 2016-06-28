@@ -14,8 +14,8 @@ namespace SprinklerRPI.Controllers
     partial class SprinklerManagement
     {
         private const string strFileIoT = "iot.config";
-        private string strconn = "";
-        private async Task InitIoTHub()
+        static private string strconn = "";
+        static private async Task InitIoTHub()
         {
             try
             {
@@ -39,7 +39,7 @@ namespace SprinklerRPI.Controllers
 
         }
 
-        private async Task ReceiveDataFromAzure()
+        static private async Task ReceiveDataFromAzure()
         {
             if (strconn == "")
                 return;
@@ -180,7 +180,7 @@ namespace SprinklerRPI.Controllers
             }
         }
 
-        private async Task SendDataToAzure(string text)
+        static private async Task SendDataToAzure(string text)
         {
             if (strconn == "")
                 return;

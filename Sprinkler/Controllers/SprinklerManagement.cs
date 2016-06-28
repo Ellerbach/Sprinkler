@@ -20,23 +20,12 @@ namespace SprinklerRPI.Controllers
         public static int SprDuration { get; internal set; } //= 20;
         public static ArrayList SprinklerPrograms { get; internal set; } //= new ArrayList();
 
-        public SprinklerManagement()
+        static public async Task InitParam()
         {
             NUMBER_SPRINKLERS = 3;
             SprDuration = 20;
             SprinklerPrograms = new ArrayList();
-            InitParam().Wait();
-            //Init list of saved programs
-            InitPrograms();
-            //init the timer that will ruin every minute to check when to stop/start 
-            InitTimer();
-            InitIoTHub().Wait();
-            SendDataToAzure("{\"info\":\"Sprinkler system started\"}");
-            ReceiveDataFromAzure();
-        }
 
-        private async Task InitParam()
-        {
             FileStream fileToRead = null;
             try
             {
@@ -83,7 +72,7 @@ namespace SprinklerRPI.Controllers
                     }
                     for (int i = 0; i < NUMBER_SPRINKLERS; i++)
                     {
-                        Sprinklers[i].Name = Param.CheckConvertString(Params, paramSpr + i);
+                        Sprinklers[i].Name = Param.CheckConvertString(Params, paramSprName + i);
                     }
                 }
             }
@@ -94,6 +83,12 @@ namespace SprinklerRPI.Controllers
                     fileToRead.Dispose();
                 }
             }
+            await InitPrograms();
+            //init the timer that will ruin every minute to check when to stop/start 
+            InitTimer();
+            await InitIoTHub();
+            SendDataToAzure("{\"info\":\"Sprinkler system started\"}");
+            ReceiveDataFromAzure();
 
         }
 

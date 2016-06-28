@@ -18,7 +18,7 @@ namespace SprinklerRPI.Controllers
             string strResp = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
             strResp += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><title>Gestion arrosage</title>";
             if (withsec)
-                strResp += "<link href=\"spr.css?" + securityKey + "\" rel=\"stylesheet\" type=\"text/css\" />";
+                strResp += "<link href=\"/file/spr.css?" + securityKey + "\" rel=\"stylesheet\" type=\"text/css\" />";
             strResp += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head>";
             strResp += "<BODY><h1>RaspberryPi2 sprinkler running Windows 10</h1><p>";
             return strResp;
@@ -301,7 +301,7 @@ namespace SprinklerRPI.Controllers
                         }
 
                     } // do we need to display all sprinklers?
-                    else if (intSprinklerNumber == -1)
+                    else if (intSprinklerNumber == int.MaxValue)
                     {
                         strResp += "List of programs for all Sprinklers.<br>";
                         for (int i = 0; i < SprinklerPrograms.Count; i++)
@@ -478,8 +478,11 @@ namespace SprinklerRPI.Controllers
                 {
                     for (int i = 0; i < NUMBER_SPRINKLERS; i++)
                     {
+                        int toopen = 0;
+                        if (!Sprinklers[i].Open)
+                            toopen = 1;
                         strResp += "Springler " + Sprinklers[i].Name + ": <a href='/" + paramPageSprinkler + Param.ParamStart + securityKey
-                            + Param.ParamSeparator + paramSpr + i + Param.ParamEqual + !Sprinklers[i].Open + "'>" + Sprinklers[i].Open + "</a><br>";
+                            + Param.ParamSeparator + paramSpr + i + Param.ParamEqual + toopen + "'>" + Sprinklers[i].Open + "</a><br>";
                         strResp += "<a href='/" + paramPageCalendar + Param.ParamStart + securityKey + Param.ParamSeparator + paramYear
                             + Param.ParamEqual + DateTime.Now.Year + Param.ParamSeparator + paramMonth + Param.ParamEqual + DateTime.Now.Month
                             + Param.ParamSeparator + paramSpr + Param.ParamEqual + i + "'>Program Sprinkler " + Sprinklers[i].Name + "</a><br>";

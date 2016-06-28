@@ -11,10 +11,9 @@ namespace SprinklerRPI.Controllers
 {
     partial class SprinklerManagement
     {
-        private Timer myTimer;
+        static private Timer myTimer;
 
-
-        private async void InitPrograms()
+        static private async Task InitPrograms()
         {
             //read all saved programs
             FileStream mystream = null;
@@ -25,6 +24,8 @@ namespace SprinklerRPI.Controllers
                 await mystream.ReadAsync(buff, 0, (int)mystream.Length);
                 string strprogs = Encoding.UTF8.GetString(buff);
                 var progs = Newtonsoft.Json.JsonConvert.DeserializeObject<SprinklerProgram[]>(strprogs);
+                if (progs == null)
+                    return;
                 foreach (var prg in progs)
                     SprinklerPrograms.Add(prg);
                 //string strDeSer = "";
@@ -54,9 +55,9 @@ namespace SprinklerRPI.Controllers
 
         }
 
-        private void InitTimer()
+        static private void InitTimer()
         {
-            myTimer = new Timer(ClockTimer_Tick, this, new TimeSpan(0, 1, 0), new TimeSpan(0, 1, 0));
+            myTimer = new Timer(ClockTimer_Tick, null, new TimeSpan(0, 1, 0), new TimeSpan(0, 1, 0));
         }
         static void ClockTimer_Tick(object sender)
         {

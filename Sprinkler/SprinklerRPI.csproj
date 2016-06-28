@@ -7,7 +7,7 @@
     <ProjectGuid>{F17A0FA2-1835-4803-A709-8C9B1BA8865D}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sprinkler</RootNamespace>
+    <RootNamespace>SprinklerRPI</RootNamespace>
     <AssemblyName>Sprinkler</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
