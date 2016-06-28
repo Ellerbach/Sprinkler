@@ -36,12 +36,6 @@ namespace SprinklerRPI.Controllers
         const string paramPageUtil = "util.aspx";
         const string paramPageSprinklersInfo = "sprdt.aspx";
         //const string paramPageHumidity = "hum.aspx";
-        const string paramHumidityMinValue = "min";
-        const string paramHumidityMaxValue = "max";
-        const string paramHumidityDeclValue = "dec";
-        const string paramHumidityTimeUpdate = "tup";
-        const string paramHumidityPeriod = "per";
-        const string paramHumidityNumber = "nse";
 
         const string strFileProgram = "Prog.config";
         const string strFileListProgram = "lstprg.txt";
