@@ -26,6 +26,8 @@ namespace SprinklerRPI
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            await IoTCoreHelpers.Networking.Wifi.UpdateConnectivity("wifi.config");
+
             await SprinklerManagement.InitParam();
 
             webserver = new HttpServer(80);
