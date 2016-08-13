@@ -4,7 +4,9 @@ using Devkoes.Restup.WebServer.Rest;
 using SprinklerRPI.Controllers;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -17,6 +19,7 @@ namespace SprinklerRPI
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private DispatcherTimer RebootTimer;
         private HttpServer webserver;
         public MainPage()
         {
@@ -45,6 +48,21 @@ namespace SprinklerRPI
             restRouteHandler.RegisterController<SprinklerManagement>();
 
             await webserver.StartServerAsync();
+
+            //RebootTimer = new DispatcherTimer();
+            //RebootTimer.Interval = new TimeSpan(1, 0, 0, 0);
+            //RebootTimer.Tick += RebootTimer_Tick;
+            //RebootTimer.Start();
+        }
+
+        private void RebootTimer_Tick(object sender, object e)
+        {
+            // Save the programs
+            Task<bool> t = SprinklerManagement.SavePrograms();
+            while (!t.IsCompleted)
+                ;
+            //reboot the device
+            ShutdownManager.BeginShutdown(ShutdownKind.Restart, new TimeSpan(0, 0, 5));
         }
     }
 }

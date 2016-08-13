@@ -6,12 +6,33 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SprinklerRPI.Controllers
 {
     partial class SprinklerManagement
     {
         static private Timer myTimer;
+
+        static private async Task InitTypicalProgam()
+        {
+            FileStream fileToRead = null;
+            try
+            {
+                fileToRead = new FileStream(await GetFilePathAsync(strFileTypicalProgram), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                long fileLength = fileToRead.Length;
+                byte[] buf = new byte[fileLength];
+                // Reads the data.
+                fileToRead.Read(buf, 0, (int)fileLength);
+                // convert the read into a string
+                var strdata = new string(Encoding.UTF8.GetChars(buf));
+                TypicalProg = JsonConvert.DeserializeObject<SprinklerProgramTypical[]>(strdata);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
 
         static private async Task InitPrograms()
         {

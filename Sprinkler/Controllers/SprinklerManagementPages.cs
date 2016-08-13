@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.System;
 
 namespace SprinklerRPI.Controllers
 {
@@ -498,6 +499,8 @@ namespace SprinklerRPI.Controllers
                         //}
                         //strResp = await OutPutStream(response, strResp);
                     }
+                    strResp += "<p><a href='/typic.aspx" + Param.ParamStart + securityKey + Param.ParamSeparator + paramClk
+                        + Param.ParamEqual + "1'>Create typical program</a><br>";
                     strResp += "<p><a href='/" + paramPageUtil + Param.ParamStart + securityKey + Param.ParamSeparator + paramClk
                         + Param.ParamEqual + "1'>Update date and time</a><br>";
                     strResp += "<a href='/" + paramPageUtil + Param.ParamStart + securityKey + Param.ParamSeparator + paramSave
@@ -519,6 +522,46 @@ namespace SprinklerRPI.Controllers
             {
 
             }
+            return strResp;
+
+        }
+
+        private string ProcessTypical(string param)
+        {
+            string strResp = "";
+
+            strResp = BuildHeader();
+
+            strResp += "Programming typical sprinkling<br>";
+            try
+            {
+                if (TypicalProg != null)
+                {
+                    for (int i = 0; i < TypicalProg.Length; i++)
+                    {
+                        DateTimeOffset dtoff = DateTimeOffset.Now;
+
+                        if (TimeSpan.Compare(TypicalProg[i].StartTime, dtoff.TimeOfDay) < 0)
+                        {
+                            dtoff = dtoff.AddDays(1);
+                        }
+                        dtoff = new DateTimeOffset(dtoff.Year, dtoff.Month, dtoff.Day, TypicalProg[i].StartTime.Hours, TypicalProg[i].StartTime.Minutes, TypicalProg[i].StartTime.Seconds, dtoff.Offset);
+                        
+                        SprinklerPrograms.Add(new SprinklerProgram(dtoff, TypicalProg[i].Duration, TypicalProg[i].SprinklerNumber));
+                        strResp += $"Adding program on Sprinkler {TypicalProg[i].SprinklerNumber}, at {dtoff} for {TypicalProg[i].Duration}<br>";
+                    }
+                }
+                else
+                    strResp += "Sorry, there is no typical program setup";
+            }
+            catch (Exception e)
+            {
+                strResp +=$"Ups, something went wrong! {e.Message}";
+            }
+            
+            strResp += "<a href='/" + paramPageSprinkler + Param.ParamStart + securityKey + "'>Return to main page</a>";
+            strResp += "</BODY></HTML>";
+
             return strResp;
 
         }
@@ -548,6 +591,7 @@ namespace SprinklerRPI.Controllers
                     strResp += "Please allow time for reboot...<br>";
                     strResp += "<a href='/" + paramPageSprinkler + Param.ParamStart + securityKey + "'>Return to main page</a>";
                     strResp += "</BODY></HTML>";
+                    ShutdownManager.BeginShutdown(ShutdownKind.Restart, new TimeSpan(0, 0, 10));
                     //strResp = await OutPutStream(response, strResp);
                     //Thread.Sleep(1000);
                     //PowerState.RebootDevice(false);
@@ -589,7 +633,7 @@ namespace SprinklerRPI.Controllers
             return strResp;
         }
 
-        private async Task<bool> SavePrograms()
+        public static async Task<bool> SavePrograms()
         {
             try
             {
@@ -611,7 +655,7 @@ namespace SprinklerRPI.Controllers
                 strSer = JsonConvert.SerializeObject(SprinklerPrograms);
                 FileStream fileToWrite = new FileStream(await GetFilePathAsync(strFileListProgram), FileMode.OpenOrCreate, FileAccess.Write);
                 byte[] buff = Encoding.UTF8.GetBytes(strSer);
-                fileToWrite.Seek(fileToWrite.Length, 0);
+                //fileToWrite.Write(fileToWrite.Length, 0);
                 fileToWrite.Write(buff, 0, buff.Length);
                 fileToWrite.Dispose(); //.Close();
                                        //Debug.GC(true);

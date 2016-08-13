@@ -19,6 +19,7 @@ namespace SprinklerRPI.Controllers
         public static Sprinkler[] Sprinklers { get; internal set; }
         public static int SprDuration { get; internal set; } //= 20;
         public static ArrayList SprinklerPrograms { get; internal set; } //= new ArrayList();
+        public static SprinklerProgramTypical[] TypicalProg { get; set;  }
 
         static public async Task InitParam()
         {
@@ -84,6 +85,7 @@ namespace SprinklerRPI.Controllers
                 }
             }
             await InitPrograms();
+            await InitTypicalProgam();
             //init the timer that will ruin every minute to check when to stop/start 
             InitTimer();
             await InitIoTHub();
@@ -158,5 +160,14 @@ namespace SprinklerRPI.Controllers
                 return new GetResponse(GetResponse.ResponseStatus.OK, ErrorAuth());
             return new GetResponse(GetResponse.ResponseStatus.OK, ProcessSprinklerDetails(param));
         }
+
+        [UriFormat("/typic.aspx{param}")]
+        public GetResponse Typical(string param)
+        {
+            if (!SecCheck(param))
+                return new GetResponse(GetResponse.ResponseStatus.OK, ErrorAuth());
+            return new GetResponse(GetResponse.ResponseStatus.OK, ProcessTypical(param));
+        }
+
     }
 }

@@ -111,6 +111,7 @@
     <Compile Include="Models\MessageIoT.cs" />
     <Compile Include="Models\Sprinkler.cs" />
     <Compile Include="Models\SprinklerProgram.cs" />
+    <Compile Include="Models\SprinklerProgramTypical.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

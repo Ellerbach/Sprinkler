@@ -1,0 +1,1 @@
+[{"StartTime":"01:00:00","Duration":"00:25:00","SprinklerNumber":0},{"StartTime":"01:30:00","Duration":"00:25:00","SprinklerNumber":1},{"StartTime":"02:00:00","Duration":"00:25:00","SprinklerNumber":2},{"StartTime":"02:30:00","Duration":"00:06:00","SprinklerNumber":3},{"StartTime":"03:00:00","Duration":"00:06:00","SprinklerNumber":4}]
