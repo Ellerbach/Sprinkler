@@ -109,6 +109,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\MessageIoT.cs" />
+    <Compile Include="Models\SoilHumidity.cs" />
     <Compile Include="Models\Sprinkler.cs" />
     <Compile Include="Models\SprinklerProgram.cs" />
     <Compile Include="Models\SprinklerProgramTypical.cs" />

@@ -21,6 +21,7 @@ namespace SprinklerRPI.Controllers
         const string paramMinute = "mi";
         const string paramDuration = "du";
         const string paramSpr = "spr";
+        const string paramInv = "inv";
         const string paramClk = "clk";
         const string paramReboot = "rbt";
         const string paramSave = "save";

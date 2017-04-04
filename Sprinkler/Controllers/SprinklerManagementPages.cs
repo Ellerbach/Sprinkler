@@ -21,7 +21,7 @@ namespace SprinklerRPI.Controllers
             if (withsec)
                 strResp += "<link href=\"/file/spr.css?" + securityKey + "\" rel=\"stylesheet\" type=\"text/css\" />";
             strResp += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head>";
-            strResp += "<BODY><h1>RaspberryPi2 sprinkler running Windows 10</h1><p>";
+            strResp += "<BODY><h1>RaspberryPi sprinkler running Windows 10</h1><p>";
             return strResp;
         }
 
@@ -477,6 +477,10 @@ namespace SprinklerRPI.Controllers
                     strResp = BuildHeader(true);
                 if (!bnoUI)
                 {
+                    if (soilHumidity.IsHumid)
+                        strResp += "It is dry! Time to sprinkler!<br>";
+                    else
+                        strResp += "It is humid, no need to sprinkler.<br>";
                     for (int i = 0; i < NUMBER_SPRINKLERS; i++)
                     {
                         int toopen = 0;

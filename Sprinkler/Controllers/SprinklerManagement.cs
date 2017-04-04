@@ -19,7 +19,8 @@ namespace SprinklerRPI.Controllers
         public static Sprinkler[] Sprinklers { get; internal set; }
         public static int SprDuration { get; internal set; } //= 20;
         public static ArrayList SprinklerPrograms { get; internal set; } //= new ArrayList();
-        public static SprinklerProgramTypical[] TypicalProg { get; set;  }
+        public static SprinklerProgramTypical[] TypicalProg { get; set; }
+        public static SoilHumidity soilHumidity { get; set;}
 
         static public async Task InitParam()
         {
@@ -69,7 +70,8 @@ namespace SprinklerRPI.Controllers
                     Sprinklers = new Sprinkler[NUMBER_SPRINKLERS];
                     for (int i = 0; i < Sprinklers.Length; i++)
                     {
-                        Sprinklers[i] = new Sprinkler(i);
+                        bool isinvert = Param.CheckConvertBool(Params, paramInv + i);
+                        Sprinklers[i] = new Sprinkler(i, isinvert);
                     }
                     for (int i = 0; i < NUMBER_SPRINKLERS; i++)
                     {
@@ -84,6 +86,7 @@ namespace SprinklerRPI.Controllers
                     fileToRead.Dispose();
                 }
             }
+            soilHumidity = new SoilHumidity();
             await InitPrograms();
             await InitTypicalProgam();
             //init the timer that will ruin every minute to check when to stop/start 

@@ -17,14 +17,17 @@ namespace SprinklerRPI.Models
         private Timer MyTimerCallBack;
         private long MyTicksWait;
 
+        public bool IsInverted { get; set; }
+
         private const int GPIO_PIN_D0 = 5;
         private const int GPIO_PIN_D1 = 6;
         private const int GPIO_PIN_D2 = 13;
         private const int GPIO_PIN_D3 = 19;
         private const int GPIO_PIN_D4 = 26;
 
-        public Sprinkler(int SprNum)
+        public Sprinkler(int SprNum, bool isinverted = false)
         {
+            IsInverted = isinverted;
             MyTimerCallBack = new Timer(MyTimerCallBack_Tick, this, Timeout.Infinite, Timeout.Infinite);
             //MyTimerCallBack.Tick += MyTimerCallBack_Tick;
 
@@ -35,38 +38,36 @@ namespace SprinklerRPI.Models
             {
                 case 0:
                     MySprOpen = gpio.OpenPin(GPIO_PIN_D0);
-                    pinValue = GpioPinValue.Low;
+                    pinValue = IsInverted ? GpioPinValue.High : GpioPinValue.Low;
                     MySprOpen.Write(pinValue);
                     MySprOpen.SetDriveMode(GpioPinDriveMode.Output);
                     break;
                 case 1:
                     MySprOpen = gpio.OpenPin(GPIO_PIN_D1);
-                    pinValue = GpioPinValue.Low;
+                    pinValue = IsInverted ? GpioPinValue.High : GpioPinValue.Low;
                     MySprOpen.Write(pinValue);
                     MySprOpen.SetDriveMode(GpioPinDriveMode.Output);
                     break;
                 case 2:
                     MySprOpen = gpio.OpenPin(GPIO_PIN_D2);
-                    pinValue = GpioPinValue.Low;
+                    pinValue = IsInverted ? GpioPinValue.High : GpioPinValue.Low;
                     MySprOpen.Write(pinValue);
                     MySprOpen.SetDriveMode(GpioPinDriveMode.Output);
                     break;
                 case 3:
                     MySprOpen = gpio.OpenPin(GPIO_PIN_D3);
-                    pinValue = GpioPinValue.Low;
+                    pinValue = IsInverted ? GpioPinValue.High : GpioPinValue.Low;
                     MySprOpen.Write(pinValue);
                     MySprOpen.SetDriveMode(GpioPinDriveMode.Output);
                     break;
                 case 4:
                     MySprOpen = gpio.OpenPin(GPIO_PIN_D4);
-                    pinValue = GpioPinValue.Low;
+                    pinValue = IsInverted ? GpioPinValue.High : GpioPinValue.Low;
                     MySprOpen.Write(pinValue);
                     MySprOpen.SetDriveMode(GpioPinDriveMode.Output);
                     break;
             }
         }
-
-
 
         // open or close a sprinkler
         public bool Open
@@ -77,9 +78,9 @@ namespace SprinklerRPI.Models
                 MySprinklerisOpen = value;
                 //do harware here
                 if (MySprinklerisOpen)
-                    pinValue = GpioPinValue.High;
+                    pinValue = IsInverted ? GpioPinValue.Low : GpioPinValue.High; 
                 else
-                    pinValue = GpioPinValue.Low;
+                    pinValue = IsInverted ? GpioPinValue.High : GpioPinValue.Low; 
                 MySprOpen.Write(pinValue);
             }
         }
