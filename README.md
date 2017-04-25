@@ -34,7 +34,10 @@ You can use as many relay as you need. Output pins from Raspberry are:
 So you’ll need to connect the output of each pin to the relay pin entry. Don’t forget as well the 3.3V and the ground.
 ![Relay](./Assets/Relay.jpg "Relay")
 
-To replace the relay, you can use as well an programmable automate like I do:
-![Electro valves](./Assets/rpi.jpg "Electro valves protected")
+Here is how it can look like with 5 relay. Note that the code now implement a pin select for the realy alimentation. Pin is GPIO20. The setup files include as well a variable inv0, inv1, etc to be set at 1 if you want an inverted output. If not, then you can ignore. I did this because the group of 2 relay has inverted input. A high level will open the relay, a low one close it. To avoid consume too much energy, I have implemented the capacity to have inversted output and alimenting the relays. In case the rapsberry reboot and the program will not lunch, the relay won't be alimented. So there is no risk of opening them, so no risk of sprinkling indefinitely.
+![Relay setup](./Assets/rpi2.jpg "Relay setup")
+
+To replace the relay, you can use as well an programmable automate like I did in the past. I no longuer use this setup as the automate stopped working after multiple years.
+![Automate setup](./Assets/rpi.jpg "Automate setup")
 
 The project is using the fork from [Restup](https://github.com/Ellerbach/restup "Restup") which is in my repo as well as the [IoT Helpers](https://github.com/Ellerbach/RPI-Win10-Helpers "IoT Helpers") on my repo as well.
