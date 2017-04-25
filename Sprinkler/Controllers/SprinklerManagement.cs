@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Gpio;
 
 namespace SprinklerRPI.Controllers
 {
@@ -21,6 +22,8 @@ namespace SprinklerRPI.Controllers
         public static ArrayList SprinklerPrograms { get; internal set; } //= new ArrayList();
         public static SprinklerProgramTypical[] TypicalProg { get; set; }
         public static SoilHumidity soilHumidity { get; set;}
+        private const int GPIO_PIN = 20;
+        private static GpioPin EnableOutput;
 
         static public async Task InitParam()
         {
@@ -89,6 +92,11 @@ namespace SprinklerRPI.Controllers
             soilHumidity = new SoilHumidity();
             await InitPrograms();
             await InitTypicalProgam();
+            //initialize the relay output
+           var gpio = GpioController.GetDefault();
+            EnableOutput = gpio.OpenPin(GPIO_PIN);
+            EnableOutput.SetDriveMode(GpioPinDriveMode.Output);
+            EnableOutput.Write(GpioPinValue.High);
             //init the timer that will ruin every minute to check when to stop/start 
             InitTimer();
             await InitIoTHub();
