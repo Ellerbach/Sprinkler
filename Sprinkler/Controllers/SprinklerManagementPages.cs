@@ -478,15 +478,15 @@ namespace SprinklerRPI.Controllers
                 if (!bnoUI)
                 {
                     if (soilHumidity.IsHumid)
-                        strResp += "It is dry! Time to sprinkler!<br>";
+                        strResp += "It is dry! Time to sprinkle!<br>";
                     else
-                        strResp += "It is humid, no need to sprinkler.<br>";
+                        strResp += "It is humid, no need to sprinkle.<br>";
                     //insert information regarding prediction
                     if (WunderSettings != null)
                         if ((WunderSettings.Key != "") && (WunderSettings.Stations?.Length > 0))
                         {
                             GetForecast(param);
-                            strResp += $"Based on <a href=\"" + paramPagePredictions + Param.ParamStart + securityKey + "\">previous day and forecast</a>, ";
+                            strResp += $"<p>Based on <a href=\"" + paramPagePredictions + Param.ParamStart + securityKey + "\">previous day and forecast</a>, ";
                             if (bNeedToSprinkle)
                                 strResp += "I do recommend to sprinkle. ";
                             else
@@ -497,7 +497,7 @@ namespace SprinklerRPI.Controllers
                             else
                                 strResp += "not set, ";
                             strResp += "change <a href=\"/" + paramPagePredictions + Param.ParamStart + securityKey
-                                + Param.ParamSeparator + paramAutomateAll + Param.ParamEqual + !WunderSettings.AutomateAll + "\">here</a>.<br>";
+                                + Param.ParamSeparator + paramAutomateAll + Param.ParamEqual + !WunderSettings.AutomateAll + "\">here</a>.<br></p><br>";
                         }
                     for (int i = 0; i < NUMBER_SPRINKLERS; i++)
                     {
