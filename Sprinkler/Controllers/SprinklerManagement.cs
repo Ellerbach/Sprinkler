@@ -21,7 +21,7 @@ namespace SprinklerRPI.Controllers
         public static int SprDuration { get; internal set; } //= 20;
         public static ArrayList SprinklerPrograms { get; internal set; } //= new ArrayList();
         public static SprinklerProgramTypical[] TypicalProg { get; set; }
-        public static SoilHumidity soilHumidity { get; set;}
+        public static SoilHumidity soilHumidity { get; set; }
         private const int GPIO_PIN = 20;
         private static GpioPin EnableOutput;
 
@@ -92,8 +92,9 @@ namespace SprinklerRPI.Controllers
             soilHumidity = new SoilHumidity();
             await InitPrograms();
             await InitTypicalProgam();
+            await InitPredictions();
             //initialize the relay output
-           var gpio = GpioController.GetDefault();
+            var gpio = GpioController.GetDefault();
             EnableOutput = gpio.OpenPin(GPIO_PIN);
             EnableOutput.SetDriveMode(GpioPinDriveMode.Output);
             EnableOutput.Write(GpioPinValue.High);
@@ -178,6 +179,14 @@ namespace SprinklerRPI.Controllers
             if (!SecCheck(param))
                 return new GetResponse(GetResponse.ResponseStatus.OK, ErrorAuth());
             return new GetResponse(GetResponse.ResponseStatus.OK, ProcessTypical(param));
+        }
+
+        [UriFormat("/predict.aspx{param}")]
+        public GetResponse Predict(string param)
+        {
+            if (!SecCheck(param))
+                return new GetResponse(GetResponse.ResponseStatus.OK, ErrorAuth());
+            return new GetResponse(GetResponse.ResponseStatus.OK, GetForecast(param));
         }
 
     }

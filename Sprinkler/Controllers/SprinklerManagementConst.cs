@@ -36,11 +36,14 @@ namespace SprinklerRPI.Controllers
         const string paramPageSprinkler = "spr.aspx";
         const string paramPageUtil = "util.aspx";
         const string paramPageSprinklersInfo = "sprdt.aspx";
+        const string paramPagePredictions = "predict.aspx";
+        const string paramAutomateAll = "auto";
         //const string paramPageHumidity = "hum.aspx";
 
         const string strFileProgram = "Prog.config";
         const string strFileTypicalProgram = "typic.txt";
         const string strFileListProgram = "lstprg.txt";
+        const string strFilePrediction = "wunder.config";
         #endregion All const string
     }
 }

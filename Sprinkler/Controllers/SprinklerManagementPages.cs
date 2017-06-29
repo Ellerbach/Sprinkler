@@ -14,7 +14,7 @@ namespace SprinklerRPI.Controllers
 {
     partial class SprinklerManagement
     {
-        private string BuildHeader(bool withsec = true)
+        static private string BuildHeader(bool withsec = true)
         {
             string strResp = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
             strResp += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><title>Gestion arrosage</title>";
@@ -481,6 +481,23 @@ namespace SprinklerRPI.Controllers
                         strResp += "It is dry! Time to sprinkler!<br>";
                     else
                         strResp += "It is humid, no need to sprinkler.<br>";
+                    //insert information regarding prediction
+                    if (WunderSettings != null)
+                        if ((WunderSettings.Key != "") && (WunderSettings.Stations?.Length > 0))
+                        {
+                            GetForecast(param);
+                            strResp += $"Based on <a href=\"" + paramPagePredictions + Param.ParamStart + securityKey + "\">previous day and forecast</a>, ";
+                            if (bNeedToSprinkle)
+                                strResp += "I do recommend to sprinkle. ";
+                            else
+                                strResp += "No need to sprinkle. Automation mode is ";
+                            if (WunderSettings.AutomateAll)
+                                strResp += "set, ";
+                            else
+                                strResp += "not set, ";
+                            strResp += "change <a href=\"/" + paramPagePredictions + Param.ParamStart + securityKey
+                                + Param.ParamSeparator + paramAutomateAll + Param.ParamEqual + !WunderSettings.AutomateAll + "\">here</a>.<br>";
+                        }
                     for (int i = 0; i < NUMBER_SPRINKLERS; i++)
                     {
                         int toopen = 0;
@@ -550,7 +567,7 @@ namespace SprinklerRPI.Controllers
                             dtoff = dtoff.AddDays(1);
                         }
                         dtoff = new DateTimeOffset(dtoff.Year, dtoff.Month, dtoff.Day, TypicalProg[i].StartTime.Hours, TypicalProg[i].StartTime.Minutes, TypicalProg[i].StartTime.Seconds, dtoff.Offset);
-                        
+
                         SprinklerPrograms.Add(new SprinklerProgram(dtoff, TypicalProg[i].Duration, TypicalProg[i].SprinklerNumber));
                         strResp += $"Adding program on Sprinkler {TypicalProg[i].SprinklerNumber}, at {dtoff} for {TypicalProg[i].Duration}<br>";
                     }
@@ -560,9 +577,9 @@ namespace SprinklerRPI.Controllers
             }
             catch (Exception e)
             {
-                strResp +=$"Ups, something went wrong! {e.Message}";
+                strResp += $"Ups, something went wrong! {e.Message}";
             }
-            
+
             strResp += "<a href='/" + paramPageSprinkler + Param.ParamStart + securityKey + "'>Return to main page</a>";
             strResp += "</BODY></HTML>";
 

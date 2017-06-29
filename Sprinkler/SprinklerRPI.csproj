@@ -103,6 +103,7 @@
     <Compile Include="Controllers\SprinklerManagement.cs" />
     <Compile Include="Controllers\SprinklerManagementConst.cs" />
     <Compile Include="Controllers\SprinklerManagementPages.cs" />
+    <Compile Include="Controllers\SprinklerManagementPredictions.cs" />
     <Compile Include="Controllers\SprinklerManagementTimer.cs" />
     <Compile Include="Helpers\DaysOfWeek.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -113,6 +114,7 @@
     <Compile Include="Models\Sprinkler.cs" />
     <Compile Include="Models\SprinklerProgram.cs" />
     <Compile Include="Models\SprinklerProgramTypical.cs" />
+    <Compile Include="Models\WundergroundSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +157,11 @@
     <SDKReference Include="WindowsIoT, Version=10.0.10586.0">
       <Name>Windows IoT Extensions for the UWP</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="CreativeGurus.Weather.Wunderground">
+      <HintPath>..\..\WUnderground.Net\CreativeGurus.Weather.Wunderground\bin\Debug\netstandard1.1\CreativeGurus.Weather.Wunderground.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

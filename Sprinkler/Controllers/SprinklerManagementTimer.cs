@@ -84,7 +84,31 @@ namespace SprinklerRPI.Controllers
         {
             DateTime now = DateTime.Now;
             //Debug.Print(now.ToString("MM/dd/yyyy HH:mm:ss"));
-            //do we have a Sprinkler to open?
+            // check the midnight prediction if automated mode
+            if (WunderSettings.AutomateAll == true)
+                if ((now.Hour == 0) && (now.Minute == 0))
+                {
+                    GetForecast("");
+                    if (bNeedToSprinkle)
+                    {
+                        try
+                        {
+                            if (TypicalProg != null)
+                            {
+                                for (int i = 0; i < TypicalProg.Length; i++)
+                                {
+                                    DateTimeOffset dtoff = DateTimeOffset.Now;
+                                    dtoff = new DateTimeOffset(dtoff.Year, dtoff.Month, dtoff.Day, TypicalProg[i].StartTime.Hours, TypicalProg[i].StartTime.Minutes, TypicalProg[i].StartTime.Seconds, dtoff.Offset);
+                                    SprinklerPrograms.Add(new SprinklerProgram(dtoff, TypicalProg[i].Duration, TypicalProg[i].SprinklerNumber));
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                        bNeedToSprinkle = false;
+                    }
+                }
             long initialtick = now.Ticks;
             long actualtick;
             for (int i = 0; i < SprinklerPrograms.Count; i++)
