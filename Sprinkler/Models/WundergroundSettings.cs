@@ -11,5 +11,8 @@ namespace SprinklerRPI.Models
         public string Key { get; set; }
         public string[] Stations { get; set; }
         public bool AutomateAll { get; set; }
+        public float PrecipitationThresholdActuals { get; set; }
+        public float PrecipitationThresholdForecast { get; set; }
+        public int PrecipitationPercentForecast { get; set; }
     }
 }

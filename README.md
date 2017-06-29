@@ -40,4 +40,4 @@ Here is how it can look like with 5 relay. Note that the code now implement a pi
 To replace the relay, you can use as well an programmable automate like I did in the past. I no longuer use this setup as the automate stopped working after multiple years.
 ![Automate setup](./Assets/rpi.jpg "Automate setup")
 
-The project is using the fork from [Restup](https://github.com/Ellerbach/restup "Restup") which is in my repo as well as the [IoT Helpers](https://github.com/Ellerbach/RPI-Win10-Helpers "IoT Helpers") on my repo as well.
+The project is using the fork from [Restup](https://github.com/Ellerbach/restup "Restup") which is in my repo as well as the [IoT Helpers](https://github.com/Ellerbach/RPI-Win10-Helpers "IoT Helpers") on my repo as well and [WUnderground.Net](https://github.com/Ellerbach/WUnderground.Net "WUnderground.Net"). Those fork are mainly due to need of implementing specific features which has not been accepted back by the project owner.

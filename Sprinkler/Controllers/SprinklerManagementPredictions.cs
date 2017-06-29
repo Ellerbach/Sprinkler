@@ -63,30 +63,30 @@ namespace SprinklerRPI.Controllers
                     //Console.WriteLine("Magic recommendation:");
                     sb.Append("Magic recommendation:<br>");
 
-                    if (history.History.Dailysummary[0].PrecipitationMetric > 4)
+                    if (history.History.Dailysummary[0].PrecipitationMetric > WunderSettings.PrecipitationThresholdActuals)
                     {
                         //Console.Write($"It rained and more than 5mm ({history.History.DailySummaries[0].PrecipitationMetric}mm), no need to sprinkle.");
-                        sb.Append($"It rained and more than 4 mm ({history.History.Dailysummary[0].PrecipitationMetric}mm), <b>no need to sprinkle</b>.<br>");
+                        sb.Append($"It rained and more than {WunderSettings.PrecipitationThresholdActuals} mm ({history.History.Dailysummary[0].PrecipitationMetric}mm), <b>no need to sprinkle</b>.<br>");
                     }
-                    else if (forecast.Forecast.SimpleForecast.ForecastDay[0].Qpf_AllDay.Mm > 3)
+                    else if (forecast.Forecast.SimpleForecast.ForecastDay[0].Qpf_AllDay.Mm > WunderSettings.PrecipitationThresholdForecast)
                     {
                         //Console.WriteLine($"Forecast is for rain, more than 3mm ({forecast.Forecast.SimpleForecast.ForecastDay[0].Qpf_AllDay.Mm}mm), checking the confidence index.");
-                        sb.Append($"Forecast is for rain, more than 3mm ({forecast.Forecast.SimpleForecast.ForecastDay[0].Qpf_AllDay.Mm} mm), checking the confidence index.<br>");
-                        if (forecast.Forecast.SimpleForecast.ForecastDay[0].Pop > 60)
+                        sb.Append($"Forecast is for rain, more than {WunderSettings.PrecipitationThresholdForecast} mm ({forecast.Forecast.SimpleForecast.ForecastDay[0].Qpf_AllDay.Mm} mm), checking the confidence index.<br>");
+                        if (forecast.Forecast.SimpleForecast.ForecastDay[0].Pop > WunderSettings.PrecipitationPercentForecast)
                         {
                             //Console.WriteLine($"Considence index if more than 60% ({forecast.Forecast.SimpleForecast.ForecastDay[0].Pop}%), so no need to sprinkle.");
-                            sb.Append($"Considence index is more than 60 % ({forecast.Forecast.SimpleForecast.ForecastDay[0].Pop} %), so <b>no need to sprinkle</b>.<br>");
+                            sb.Append($"Considence index is more than {WunderSettings.PrecipitationPercentForecast} % ({forecast.Forecast.SimpleForecast.ForecastDay[0].Pop} %), so <b>no need to sprinkle</b>.<br>");
                         }
                         else
                         {
                             bNeedToSprinkle = true;
-                            sb.Append($"Considence index is less than 60 % ({forecast.Forecast.SimpleForecast.ForecastDay[0].Pop} %), so yes, <b>plan to sprinkle!</b><br>");
+                            sb.Append($"Considence index is less than {WunderSettings.PrecipitationPercentForecast} % ({forecast.Forecast.SimpleForecast.ForecastDay[0].Pop} %), so yes, <b>plan to sprinkle!</b><br>");
                         }
                     }
                     else
                     {
                         bNeedToSprinkle = true;
-                        sb.Append($"Forecast is for rain, but less than 4 mm ({forecast.Forecast.SimpleForecast.ForecastDay[0].Qpf_AllDay.Mm} mm), yes, <b>plan to sprinkle!</b><br>");
+                        sb.Append($"Forecast is for rain, but less than {WunderSettings.PrecipitationThresholdActuals} mm ({forecast.Forecast.SimpleForecast.ForecastDay[0].Qpf_AllDay.Mm} mm), yes, <b>plan to sprinkle!</b><br>");
                     }
                     if (bNeedToSprinkle)
                     {

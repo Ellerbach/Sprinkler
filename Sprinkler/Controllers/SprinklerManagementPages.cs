@@ -490,7 +490,8 @@ namespace SprinklerRPI.Controllers
                             if (bNeedToSprinkle)
                                 strResp += "I do recommend to sprinkle. ";
                             else
-                                strResp += "No need to sprinkle. Automation mode is ";
+                                strResp += "No need to sprinkle. ";
+                            strResp += "Automation mode is ";
                             if (WunderSettings.AutomateAll)
                                 strResp += "set, ";
                             else
