@@ -19,8 +19,8 @@ namespace SprinklerRPI
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private DispatcherTimer RebootTimer;
-        private HttpServer webserver;
+        //private DispatcherTimer RebootTimer;
+        private static HttpServer webserver;
         public MainPage()
         {
             this.InitializeComponent();

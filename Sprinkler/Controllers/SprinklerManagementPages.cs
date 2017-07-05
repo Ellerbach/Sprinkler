@@ -521,8 +521,9 @@ namespace SprinklerRPI.Controllers
                         //}
                         //strResp = await OutPutStream(response, strResp);
                     }
-                    strResp += "<p><a href='/typic.aspx" + Param.ParamStart + securityKey + Param.ParamSeparator + paramClk
-                        + Param.ParamEqual + "1'>Create typical program</a><br>";
+                    strResp += "<p><a href='/" + paramPageTypic + Param.ParamStart + securityKey + Param.ParamSeparator + paramClk
+                        + Param.ParamEqual + "1'>Create typical program</a><br></p>";
+                    strResp += "<p><a href='/" + paramPageHistoric + Param.ParamStart + securityKey +"'>List historical data</a></p>";
                     strResp += "<p><a href='/" + paramPageUtil + Param.ParamStart + securityKey + Param.ParamSeparator + paramClk
                         + Param.ParamEqual + "1'>Update date and time</a><br>";
                     strResp += "<a href='/" + paramPageUtil + Param.ParamStart + securityKey + Param.ParamSeparator + paramSave
@@ -653,6 +654,65 @@ namespace SprinklerRPI.Controllers
             string strResp = "";
             strResp += JsonConvert.SerializeObject(Sprinklers);
             return strResp;
+        }
+
+
+        private string ProcessHistoricAsync(string param)
+        {
+            StringBuilder strResp = new StringBuilder();
+            bool bnoUI = false;
+            try
+            {
+                // decode params
+                // params must be sprX=0; or 1 where X is a number from 0 to 2
+
+                List<Param> Params = Param.decryptParam(param);
+                if (Params != null)
+                {
+                    bnoUI = Param.CheckConvertBool(Params, paramNoUI);
+                }
+                var sprhist = ReadProgamActual().Result;
+                if (!bnoUI)
+                {
+                    strResp.Append(BuildHeader());
+                    if (sprhist != null)
+                    {
+                        strResp.Append("Here is the list of historical sprinkling: <br><br>");
+                        strResp.Append("<table>");
+                        //first raw
+                        strResp.Append("<tr><th>Date and time</th><th>Lengh</th><th>Spr #</th></tr>");
+                        for (int i = 0; i < sprhist.Length; i++)
+                        {
+                            strResp.Append($"<tr><td>{sprhist[i].DateTimeStart.ToString("yyyy-MM-dd HH:mm")}</td><td>" +
+                                $"{sprhist[i].Duration.ToString(@"hh\:mm")}</td><td>" +
+                                $"{sprhist[i].SprinklerNumber}</td></tr>");
+                        }
+
+                        strResp.Append("</table>");
+                    }
+                    else
+                        strResp.Append("No historical sprinkling recorded.<br>");
+                    strResp.Append("<br><a href='/" + paramPageSprinkler + Param.ParamStart + securityKey + "'>Back to main page</a>");
+                    strResp.Append("</BODY></HTML>");
+                }
+                else
+                {
+                    //strResp = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nCache-Control: no-cache\r\nConnection: close\r\n\r\n";
+                    strResp.Append(JsonConvert.SerializeObject(sprhist));
+
+                }
+            }
+            catch (Exception e)
+            {
+                LogToAzure($"exception building historic {e.Message}");
+                if (bnoUI)
+                    return "{}";
+                else
+                {
+                    strResp.Append(e.Message + "</body></html>");
+                }
+            }
+            return strResp.ToString();
         }
 
         public static async Task<bool> SavePrograms()

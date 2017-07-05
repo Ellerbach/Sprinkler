@@ -14,7 +14,7 @@ namespace SprinklerRPI.Controllers
 {
     partial class SprinklerManagement
     {
-        static private WundergroundSettings WunderSettings;
+        static private WundergroundSettings WunderSettings = new WundergroundSettings();
         static private bool bNeedToSprinkle;
 
         static private async Task InitPredictions()
@@ -30,6 +30,13 @@ namespace SprinklerRPI.Controllers
                 // convert the read into a string
                 var strdata = new string(Encoding.UTF8.GetChars(buf));
                 WunderSettings = JsonConvert.DeserializeObject<WundergroundSettings>(strdata);
+                // check settings and make sure time formating is correct
+                if ((WunderSettings.TimeToCheck == "") || !(WunderSettings.TimeToCheck.Contains(':')))
+                    WunderSettings.TimeToCheck = "00:00";
+                TimeCheck = new TimeSpan(Convert.ToInt32(WunderSettings.TimeToCheck.Substring(0, WunderSettings.TimeToCheck.IndexOf(':'))),
+                    Convert.ToInt32(WunderSettings.TimeToCheck.Substring(WunderSettings.TimeToCheck.IndexOf(':')+1)),
+                    0
+                    );
             }
             catch (Exception e)
             {

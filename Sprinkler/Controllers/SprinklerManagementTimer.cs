@@ -13,6 +13,8 @@ namespace SprinklerRPI.Controllers
     partial class SprinklerManagement
     {
         static private Timer myTimer;
+        static public TimeSpan TimeCheck = new TimeSpan(0, 0, 0);
+        static private DateTime LastTimeCheck = new DateTime(DateTime.Now.Year,DateTime.Now.Month, DateTime.Now.Day);
 
         static private async Task InitTypicalProgam()
         {
@@ -86,7 +88,7 @@ namespace SprinklerRPI.Controllers
             //Debug.Print(now.ToString("MM/dd/yyyy HH:mm:ss"));
             // check the midnight prediction if automated mode
             if (WunderSettings.AutomateAll == true)
-                if ((now.Hour == 0) && (now.Minute == 0))
+                if (now >= LastTimeCheck.Add(TimeCheck))
                 {
                     GetForecast("");
                     if (bNeedToSprinkle)
@@ -98,8 +100,14 @@ namespace SprinklerRPI.Controllers
                                 for (int i = 0; i < TypicalProg.Length; i++)
                                 {
                                     DateTimeOffset dtoff = DateTimeOffset.Now;
+                                    if (TypicalProg[i].StartTime.Hours < dtoff.Hour)
+                                        if (TypicalProg[i].StartTime.Minutes < dtoff.Minute)
+                                        {
+                                            dtoff = dtoff.AddDays(1);
+                                        }
                                     dtoff = new DateTimeOffset(dtoff.Year, dtoff.Month, dtoff.Day, TypicalProg[i].StartTime.Hours, TypicalProg[i].StartTime.Minutes, TypicalProg[i].StartTime.Seconds, dtoff.Offset);
                                     SprinklerPrograms.Add(new SprinklerProgram(dtoff, TypicalProg[i].Duration, TypicalProg[i].SprinklerNumber));
+                                    LogToAzure("Adding Program", SprinklerPrograms[SprinklerPrograms.Count - 1]);
                                 }
                             }
                         }
@@ -108,6 +116,7 @@ namespace SprinklerRPI.Controllers
                         }
                         bNeedToSprinkle = false;
                     }
+                    LastTimeCheck = now.AddDays(1);
                 }
             long initialtick = now.Ticks;
             long actualtick;
@@ -123,11 +132,62 @@ namespace SprinklerRPI.Controllers
                     //10000 ticks in 1 milisecond
                     Sprinklers[MySpr.SprinklerNumber].TimerInterval = (int)(MySpr.Duration.Ticks / 10000); //= new Timer(new TimerCallback(ClockStopSprinkler), null, (int)(MySpr.Duration.Ticks / 10000), 0);
                     //Sprinklers[MySpr.SprinklerNumber].TimerCallBack.Start();
+                    // Save the data
+                    SaveProgamActual(MySpr);
+                    LogToAzure("sprinkling", MySpr);
                     SprinklerPrograms.RemoveAt(i);
                     return;
                 }
             }
+        }
 
+        static private async Task SaveProgamActual(SprinklerProgram spr)
+        {
+            FileStream fileToWrite = null;
+            try
+            {
+                fileToWrite = new FileStream(await GetFilePathAsync(strFileActualPrograms), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                var strSer = JsonConvert.SerializeObject(spr);
+                byte[] buff = Encoding.UTF8.GetBytes(strSer);
+                if (fileToWrite.Length == 0)
+                { //create the first [] 
+                    fileToWrite.WriteByte(91);
+                    fileToWrite.WriteByte(93);
+                }
+                //fileToWrite.Seek(0, SeekOrigin.End);
+                fileToWrite.Position = fileToWrite.Length-1;
+                if (fileToWrite.Length >= 2) // need to write ,
+                    fileToWrite.WriteByte(44);
+                fileToWrite.Write(buff, 0, buff.Length);
+                // closing the ]
+                fileToWrite.WriteByte(93);
+                fileToWrite.Dispose();
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        static private async Task<SprinklerProgram[]> ReadProgamActual()
+        {
+            FileStream fileToRead = null;
+            try
+            {
+                fileToRead = new FileStream(await GetFilePathAsync(strFileActualPrograms), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                long fileLength = fileToRead.Length;
+                byte[] buf = new byte[fileLength];
+                // Reads the data.
+                fileToRead.Read(buf, 0, (int)fileLength);
+                // convert the read into a string
+                var strdata = new string(Encoding.UTF8.GetChars(buf));
+                var ret = JsonConvert.DeserializeObject<SprinklerProgram[]>(strdata);
+                return ret;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
     }
 }

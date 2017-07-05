@@ -37,6 +37,8 @@ namespace SprinklerRPI.Controllers
         const string paramPageUtil = "util.aspx";
         const string paramPageSprinklersInfo = "sprdt.aspx";
         const string paramPagePredictions = "predict.aspx";
+        const string paramPageHistoric = "hist.aspx";
+        const string paramPageTypic = "typic.aspx";
         const string paramAutomateAll = "auto";
         //const string paramPageHumidity = "hum.aspx";
 
@@ -44,6 +46,7 @@ namespace SprinklerRPI.Controllers
         const string strFileTypicalProgram = "typic.txt";
         const string strFileListProgram = "lstprg.txt";
         const string strFilePrediction = "wunder.config";
+        const string strFileActualPrograms = "actual.txt";
         #endregion All const string
     }
 }

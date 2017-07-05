@@ -15,6 +15,7 @@ namespace SprinklerRPI.Controllers
     {
         private const string strFileIoT = "iot.config";
         static private string strconn = "";
+        static string DeviceId = "";
         static private async Task InitIoTHub()
         {
             try
@@ -30,7 +31,10 @@ namespace SprinklerRPI.Controllers
                 //await str.ReadAsync(buf,  )
                 // convert the read into a string
 
-                strconn = new string(Encoding.UTF8.GetChars(buf));
+                strconn = new string(Encoding.UTF8.GetChars(buf));               
+                DeviceId = strconn;
+                DeviceId = DeviceId.Substring(DeviceId.IndexOf("DeviceId=", StringComparison.CurrentCultureIgnoreCase) + 9);
+                DeviceId = DeviceId.Substring(0, DeviceId.IndexOf(';'));
             }
             catch (Exception ex)
             {
@@ -209,6 +213,22 @@ namespace SprinklerRPI.Controllers
                 Debug.WriteLine($"Error posting on Azure Iot Hub: {ex.Message}");
             }
 
+        }
+
+        static private async Task LogToAzure(string info, object obj = null)
+        {
+            try
+            {
+                //quick and durty
+                string ser = "{}";
+                if( obj != null)
+                    ser = JsonConvert.SerializeObject(obj);
+                ser = "{\"info\":\""+ info + "\"," + ser.Substring(ser.IndexOf('{')+1);
+                ser = ser.Substring(0, ser.LastIndexOf('}'));
+                ser += ",\"DeviceID\":\"" + DeviceId + "\"}";
+                SendDataToAzure(ser);
+            }
+            catch (Exception) { }
         }
 
     }

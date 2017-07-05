@@ -90,6 +90,7 @@ namespace SprinklerRPI.Controllers
                 }
             }
             soilHumidity = new SoilHumidity();
+            await InitIoTHub();
             await InitPrograms();
             await InitTypicalProgam();
             await InitPredictions();
@@ -100,8 +101,8 @@ namespace SprinklerRPI.Controllers
             EnableOutput.Write(GpioPinValue.High);
             //init the timer that will ruin every minute to check when to stop/start 
             InitTimer();
-            await InitIoTHub();
-            SendDataToAzure("{\"info\":\"Sprinkler system started\"}");
+            //SendDataToAzure("{\"info\":\"Sprinkler system started\",\"DeviceID\":\""+ DeviceId +"\"}");
+            LogToAzure("Sprinkler system started");
             ReceiveDataFromAzure();
 
         }
@@ -189,5 +190,12 @@ namespace SprinklerRPI.Controllers
             return new GetResponse(GetResponse.ResponseStatus.OK, GetForecast(param));
         }
 
+        [UriFormat("/hist.aspx{param}")]
+        public GetResponse Historic(string param)
+        {
+            if (!SecCheck(param))
+                return new GetResponse(GetResponse.ResponseStatus.OK, ErrorAuth());
+            return new GetResponse(GetResponse.ResponseStatus.OK, ProcessHistoricAsync(param));
+        }
     }
 }
