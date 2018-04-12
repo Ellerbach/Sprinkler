@@ -487,7 +487,7 @@ namespace SprinklerRPI.Controllers
                         {
                             GetForecast(param);
                             strResp += $"<p>Based on <a href=\"" + paramPagePredictions + Param.ParamStart + securityKey + "\">previous day and forecast</a>, ";
-                            if (bNeedToSprinkle)
+                            if (WunderSettings.NeedToSprinkle)
                                 strResp += "I do recommend to sprinkle. ";
                             else
                                 strResp += "No need to sprinkle. ";

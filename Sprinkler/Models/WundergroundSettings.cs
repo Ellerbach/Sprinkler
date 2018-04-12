@@ -15,5 +15,9 @@ namespace SprinklerRPI.Models
         public float PrecipitationThresholdForecast { get; set; }
         public int PrecipitationPercentForecast { get; set; }
         public string TimeToCheck { get; set; }
+        public bool NeedToSprinkle { get; set; }
+        public float PercentageCorrection { get; set; }
+        public float MinTemp { get; set; }
+        public float MaxTemp { get; set; }
     }
 }

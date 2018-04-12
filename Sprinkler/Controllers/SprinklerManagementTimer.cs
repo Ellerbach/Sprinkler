@@ -14,7 +14,7 @@ namespace SprinklerRPI.Controllers
     {
         static private Timer myTimer;
         static public TimeSpan TimeCheck = new TimeSpan(0, 0, 0);
-        static private DateTime LastTimeCheck = new DateTime(DateTime.Now.Year,DateTime.Now.Month, DateTime.Now.Day);
+        static private DateTime LastTimeCheck = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
         static private async Task InitTypicalProgam()
         {
@@ -91,7 +91,7 @@ namespace SprinklerRPI.Controllers
                 if (now >= LastTimeCheck.Add(TimeCheck))
                 {
                     GetForecast("");
-                    if (bNeedToSprinkle)
+                    if (WunderSettings.NeedToSprinkle)
                     {
                         try
                         {
@@ -106,7 +106,8 @@ namespace SprinklerRPI.Controllers
                                             dtoff = dtoff.AddDays(1);
                                         }
                                     dtoff = new DateTimeOffset(dtoff.Year, dtoff.Month, dtoff.Day, TypicalProg[i].StartTime.Hours, TypicalProg[i].StartTime.Minutes, TypicalProg[i].StartTime.Seconds, dtoff.Offset);
-                                    SprinklerPrograms.Add(new SprinklerProgram(dtoff, TypicalProg[i].Duration, TypicalProg[i].SprinklerNumber));
+                                    //correct the time needed for sprinkling
+                                    SprinklerPrograms.Add(new SprinklerProgram(dtoff, TimeSpan.FromSeconds(TypicalProg[i].Duration.TotalSeconds * WunderSettings.PercentageCorrection), TypicalProg[i].SprinklerNumber));
                                     LogToAzure("Adding Program", SprinklerPrograms[SprinklerPrograms.Count - 1]);
                                 }
                             }
@@ -114,9 +115,9 @@ namespace SprinklerRPI.Controllers
                         catch (Exception e)
                         {
                         }
-                        bNeedToSprinkle = false;
+                        WunderSettings.NeedToSprinkle = false;
                     }
-                    LastTimeCheck = now.AddDays(1);
+                    LastTimeCheck = LastTimeCheck.AddDays(1);
                 }
             long initialtick = now.Ticks;
             long actualtick;
@@ -155,7 +156,7 @@ namespace SprinklerRPI.Controllers
                     fileToWrite.WriteByte(93);
                 }
                 //fileToWrite.Seek(0, SeekOrigin.End);
-                fileToWrite.Position = fileToWrite.Length-1;
+                fileToWrite.Position = fileToWrite.Length - 1;
                 if (fileToWrite.Length >= 2) // need to write ,
                     fileToWrite.WriteByte(44);
                 fileToWrite.Write(buff, 0, buff.Length);

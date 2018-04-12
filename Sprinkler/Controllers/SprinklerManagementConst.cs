@@ -43,10 +43,12 @@ namespace SprinklerRPI.Controllers
         //const string paramPageHumidity = "hum.aspx";
 
         const string strFileProgram = "Prog.config";
-        const string strFileTypicalProgram = "typic.txt";
+        const string strFileTypicalProgram = "typic.config";
         const string strFileListProgram = "lstprg.txt";
         const string strFilePrediction = "wunder.config";
         const string strFileActualPrograms = "actual.txt";
+        const string strFileFuzzy = "fuzzy.config";
+        const string strFileForecast = "forecast.config";
         #endregion All const string
     }
 }

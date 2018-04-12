@@ -93,6 +93,7 @@ namespace SprinklerRPI.Controllers
             await InitIoTHub();
             await InitPrograms();
             await InitTypicalProgam();
+            await InitFuzzyLogic();
             await InitPredictions();
             //initialize the relay output
             var gpio = GpioController.GetDefault();
